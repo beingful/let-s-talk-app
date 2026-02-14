@@ -1,0 +1,51 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build-debug",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "build",
+        "${workspaceFolder}/LetUsTalk/LetUsTalk.csproj",
+        "-c",
+        "Build"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "publish-macos-arm64",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "publish",
+        "${workspaceFolder}/LetUsTalk/LetUsTalk.csproj",
+        "-c",
+        "Release",
+        "-r",
+        "osx-arm64",
+        "--self-contained",
+        "true",
+        "-p:UseAppHost=true",
+        "-o",
+        "${workspaceFolder}/out/osx-arm64"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "bundle-macos-app",
+      "type": "shell",
+      "command": "mkdir -p \"${workspaceFolder}/out/LetUsTalk.app/Contents/MacOS\" \"${workspaceFolder}/out/LetUsTalk.app/Contents/Resources\" && cp -R \"${workspaceFolder}/out/osx-arm64/.\" \"${workspaceFolder}/out/LetUsTalk.app/Contents/MacOS/\" && cp \"${workspaceFolder}/LetUsTalk/Info.plist\" \"${workspaceFolder}/out/LetUsTalk.app/Contents/Info.plist\" && chmod +x \"${workspaceFolder}/out/LetUsTalk.app/Contents/MacOS/LetUsTalk\"",
+      "problemMatcher": []
+    },
+    {
+      "label": "build-macos-app",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "publish-macos-arm64",
+        "bundle-macos-app"
+      ],
+      "problemMatcher": []
+    }
+  ]
+}

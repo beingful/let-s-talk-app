@@ -1,0 +1,35 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug LetUsTalk",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "${workspaceFolder}/LetUsTalk/bin/Debug/net10.0/LetUsTalk.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/LetUsTalk",
+      "env": {
+        "DYLD_FALLBACK_LIBRARY_PATH": "/opt/homebrew/opt/harfbuzz/lib:/opt/homebrew/opt/freetype/lib:/opt/homebrew/opt/tesseract/lib",
+        "OPENCV_AVFOUNDATION_SKIP_AUTH": "1"
+      },
+      "preLaunchTask": "build-debug",
+      "stopAtEntry": false,
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Build LetUsTalk.app (macOS)",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "${workspaceFolder}/out/LetUsTalk.app/Contents/MacOS/LetUsTalk",
+      "args": [],
+      "cwd": "${workspaceFolder}/out/LetUsTalk.app/Contents/MacOS",
+      "env": {
+        "DYLD_FALLBACK_LIBRARY_PATH": "/opt/homebrew/opt/harfbuzz/lib:/opt/homebrew/opt/freetype/lib:/opt/homebrew/opt/tesseract/lib",
+        "OPENCV_AVFOUNDATION_SKIP_AUTH": "1"
+      },
+      "preLaunchTask": "build-macos-app",
+      "stopAtEntry": false,
+      "console": "integratedTerminal"
+    }
+  ]
+}
