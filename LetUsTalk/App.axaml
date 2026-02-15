@@ -3,7 +3,6 @@
              x:Class="LetUsTalk.App"
              xmlns:local="using:LetUsTalk"
              RequestedThemeVariant="Default">
-             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
     <Application.DataTemplates>
         <local:ViewLocator/>

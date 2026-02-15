@@ -11,20 +11,18 @@
         Title="LetUsTalk">
 
     <Window.Background>
-        <RadialGradientBrush Center="50%,50%" GradientOrigin="50%,50%" Radius="0.8">
+        <RadialGradientBrush Center="50%,50%" GradientOrigin="50%,50%" RadiusX="80%" RadiusY="80%">
             <GradientStop Color="#39393F" Offset="0"/>
             <GradientStop Color="Black" Offset="0.5"/>
         </RadialGradientBrush>
     </Window.Background>
 
     <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
     <Grid>
-        <Button Content="Connect"
+        <Button Content="{Binding ConnectButtonText}"
                 Command="{Binding ConnectCommand}"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"

@@ -24,20 +24,18 @@ public sealed partial class ConferenceRoomViewModel : ViewModelBase, IDisposable
         if (_captureTask != null)
             return;
 
-        /*if (OperatingSystem.IsMacOS())
-            Environment.SetEnvironmentVariable("OPENCV_AVFOUNDATION_SKIP_AUTH", "1");*/
-
-        // Open the capture device on the UI thread so macOS camera permission
-        // flow is not triggered from a worker thread.
         _capture = new VideoCapture(0);
+
         if (!_capture.IsOpened())
         {
             _capture.Dispose();
             _capture = null;
+
             return;
         }
 
         _captureCts = new CancellationTokenSource();
+
         _captureTask = Task.Run(() => CaptureLoop(_capture, _captureCts.Token));
     }
 

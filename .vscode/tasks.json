@@ -9,7 +9,7 @@
         "build",
         "${workspaceFolder}/LetUsTalk/LetUsTalk.csproj",
         "-c",
-        "Build"
+        "Debug"
       ],
       "problemMatcher": "$msCompile"
     },

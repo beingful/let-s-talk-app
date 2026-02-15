@@ -1,6 +1,7 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:LetUsTalk.ViewModels"
+        xmlns:conv="using:LetUsTalk.Converters"
         x:Class="LetUsTalk.Views.ConferenceRoom"
         x:DataType="vm:ConferenceRoomViewModel"
         Title="Conference Room"
@@ -12,9 +13,169 @@
     </Design.DataContext>
 
     <Grid>
-        <Image Source="{Binding CameraFrame}"
-               Stretch="UniformToFill"
-               HorizontalAlignment="Stretch"
-               VerticalAlignment="Stretch"/>
+        <Border x:Name="CameraPreviewContainer"
+                Width="640"
+                Height="360"
+                MinWidth="240"
+                MinHeight="180"
+                Margin="16"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                CornerRadius="8"
+                ClipToBounds="True"
+                BorderBrush="#4A4A4A"
+                BorderThickness="1">
+            <Grid>
+                <Image Source="{Binding CameraFrame}"
+                       Stretch="UniformToFill"
+                       HorizontalAlignment="Stretch"
+                       VerticalAlignment="Stretch"/>
+
+                <Thumb Width="18"
+                       Height="18"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Bottom"
+                       Margin="0,0,6,6"
+                       Cursor="BottomRightCorner"
+                       DragDelta="ResizeThumb_OnDragDelta">
+                    <Thumb.Template>
+                        <ControlTemplate>
+                            <Border Background="#AA111111"
+                                    BorderBrush="#B0FFFFFF"
+                                    BorderThickness="1"
+                                    CornerRadius="3"/>
+                        </ControlTemplate>
+                    </Thumb.Template>
+                </Thumb>
+            </Grid>
+        </Border>
+
+        <Grid.Styles>
+            <Style Selector="TextBox#ChatInputTextBox:pointerover">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderBrush" Value="Transparent"/>
+                <Setter Property="BorderThickness" Value="0"/>
+            </Style>
+            <Style Selector="TextBox#ChatInputTextBox:focus">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderBrush" Value="Transparent"/>
+                <Setter Property="BorderThickness" Value="0"/>
+            </Style>
+            <Style Selector="TextBox#ChatInputTextBox:focus-within">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderBrush" Value="Transparent"/>
+                <Setter Property="BorderThickness" Value="0"/>
+            </Style>
+        </Grid.Styles>
+
+        <Grid HorizontalAlignment="Right"
+              VerticalAlignment="Stretch"
+              Margin="0,16,16,16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Bounds.Width, Converter={x:Static conv:MultiplyConverter.Instance}, ConverterParameter='0.06,44'}"/>
+            </Grid.ColumnDefinitions>
+
+            <Border x:Name="ChatPanel"
+                    Grid.Column="0"
+                    Width="0"
+                    MinWidth="0"
+                    MaxWidth="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Bounds.Width, Converter={x:Static conv:MultiplyConverter.Instance}, ConverterParameter='0.45,220'}"
+                    ClipToBounds="True"
+                    Background="#CC141414"
+                    BorderBrush="#4A4A4A"
+                    BorderThickness="1"
+                    CornerRadius="8,0,0,8">
+                <Border.Transitions>
+                    <Transitions>
+                        <DoubleTransition Property="Width" Duration="0:0:0.2"/>
+                    </Transitions>
+                </Border.Transitions>
+
+                <Grid RowDefinitions="Auto,*,Auto">
+                    <Border Grid.Row="0"
+                            Background="#222222"
+                            BorderBrush="#4A4A4A"
+                            BorderThickness="0,0,0,1"
+                            Padding="12,8">
+                        <TextBlock Text="Chat"
+                                   Foreground="White"
+                                   FontWeight="SemiBold"/>
+                    </Border>
+
+                    <ScrollViewer Grid.Row="1" Margin="12,8,12,8">
+                        <TextBlock Text="No messages yet."
+                                   Foreground="#C8C8C8"/>
+                    </ScrollViewer>
+
+                    <Border Grid.Row="2"
+                            Margin="12,0,12,12"
+                            Padding="8"
+                            Background="#2A2A30"
+                            BorderBrush="#5B5B61"
+                            BorderThickness="1"
+                            CornerRadius="8">
+                        <Grid RowDefinitions="Auto,Auto">
+                            <TextBox Grid.Row="0"
+                                     x:Name="ChatInputTextBox"
+                                     Watermark="Type a message..."
+                                     AcceptsReturn="True"
+                                     TextWrapping="NoWrap"
+                                     Height="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Bounds.Height, Converter={x:Static conv:MultiplyConverter.Instance}, ConverterParameter='0.078,42'}"
+                                     VerticalContentAlignment="Center"
+                                     Background="Transparent"
+                                     BorderBrush="Transparent"
+                                     BorderThickness="0"
+                                     ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                                <TextBox.Resources>
+                                    <SolidColorBrush x:Key="TextControlBackground" Color="Transparent"/>
+                                    <SolidColorBrush x:Key="TextControlBackgroundPointerOver" Color="Transparent"/>
+                                    <SolidColorBrush x:Key="TextControlBackgroundFocused" Color="Transparent"/>
+                                    <SolidColorBrush x:Key="TextControlBorderBrush" Color="Transparent"/>
+                                    <SolidColorBrush x:Key="TextControlBorderBrushPointerOver" Color="Transparent"/>
+                                    <SolidColorBrush x:Key="TextControlBorderBrushFocused" Color="Transparent"/>
+                                </TextBox.Resources>
+                            </TextBox>
+                            <Button Grid.Row="1"
+                                    Margin="0,8,0,0"
+                                    HorizontalAlignment="Right"
+                                    Width="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Bounds.Width, Converter={x:Static conv:MultiplyConverter.Instance}, ConverterParameter='0.028,20'}"
+                                    Height="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Bounds.Width, Converter={x:Static conv:MultiplyConverter.Instance}, ConverterParameter='0.028,20'}"
+                                    CornerRadius="999"
+                                    HorizontalContentAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    ToolTip.Tip="Send message">
+                                <Viewbox Width="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Bounds.Width, Converter={x:Static conv:MultiplyConverter.Instance}, ConverterParameter='0.7,14'}"
+                                         Height="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Bounds.Height, Converter={x:Static conv:MultiplyConverter.Instance}, ConverterParameter='0.7,14'}">
+                                    <Canvas Width="24" Height="24">
+                                        <Path Data="M4,12.5 L21,4.5 L14.4,20 L12.4,13.7 Z"
+                                              Fill="White"/>
+                                    </Canvas>
+                                </Viewbox>
+                            </Button>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="1"
+                    Background="#D61A1A1A"
+                    BorderBrush="#4A4A4A"
+                    BorderThickness="1"
+                    CornerRadius="0,8,8,0">
+                <DockPanel LastChildFill="False">
+                    <Button x:Name="ChatToggleButton"
+                            DockPanel.Dock="Top"
+                            Margin="6,6,6,0"
+                            HorizontalAlignment="Center"
+                            Width="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Bounds.Width, Converter={x:Static conv:MultiplyConverter.Instance}, ConverterParameter='0.04,32'}"
+                            Height="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Bounds.Height, Converter={x:Static conv:MultiplyConverter.Instance}, ConverterParameter='0.06,32'}"
+                            ToolTip.Tip="Show/Hide chat"
+                            Click="ChatToggleButton_OnClick">
+                        <PathIcon Data="M4,6 C4,4.9 4.9,4 6,4 L18,4 C19.1,4 20,4.9 20,6 L20,14 C20,15.1 19.1,16 18,16 L10,16 L6,20 L6,16 C4.9,16 4,15.1 4,14 Z"/>
+                    </Button>
+                </DockPanel>
+            </Border>
+        </Grid>
     </Grid>
 </Window>
