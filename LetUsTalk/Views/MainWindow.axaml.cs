@@ -16,10 +16,20 @@ public partial class MainWindow : WindowBase
     protected override void InitializeDataContext()
     {
         DataContext = new MainWindowViewModel(
-            mainButtonComponent: new MainButtonComponent(
+            connectToSessionButtonComponent: new MainButtonComponent(
                 button: new Element(size: new Size(100, 100))
                     {
-                        Caption = RunningCaption.Create("LET US TALK", ' ', 4)
+                        Caption = RunningCaption.Create("CONNECT TO SESSION", ' ', 4)
+                    },
+                runningTextTimer: new DispatcherTimer
+                {
+                    Interval = TimeSpan.FromMilliseconds(200)
+                }
+            ),
+            createSessionButtonComponent: new MainButtonComponent(
+                button: new Element(size: new Size(100, 100))
+                    {
+                        Caption = RunningCaption.Create("CREATE NEW SESSION", ' ', 4)
                     },
                 runningTextTimer: new DispatcherTimer
                 {

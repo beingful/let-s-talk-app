@@ -8,20 +8,26 @@ namespace LetUsTalk.ViewModels;
 public sealed partial class MainWindowViewModel : ViewModelBase, IInitializable, IDisposable
 {
     [ObservableProperty]
-    private MainButtonComponent _mainButtonComponent;
+    private MainButtonComponent _connectToSessionButtonComponent;
 
-    public MainWindowViewModel(MainButtonComponent mainButtonComponent)
+    [ObservableProperty]
+    private MainButtonComponent _createSessionButtonComponent;
+
+    public MainWindowViewModel(MainButtonComponent connectToSessionButtonComponent, MainButtonComponent createSessionButtonComponent)
     {
-        MainButtonComponent = mainButtonComponent;
+        ConnectToSessionButtonComponent = connectToSessionButtonComponent;
+        CreateSessionButtonComponent = createSessionButtonComponent;
     }
 
     void IInitializable.Initialize()
     {
-        MainButtonComponent.Initialize();
+        ConnectToSessionButtonComponent.Initialize();
+        CreateSessionButtonComponent.Initialize();
     }
 
     void IDisposable.Dispose()
     {
-        MainButtonComponent.Dispose();
+        ConnectToSessionButtonComponent.Dispose();
+        CreateSessionButtonComponent.Dispose();
     }
 }
