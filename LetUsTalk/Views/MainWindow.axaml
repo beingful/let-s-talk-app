@@ -3,7 +3,7 @@
         xmlns:vm="using:LetUsTalk.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:conv="using:LetUsTalk.Converters"
+        xmlns:conv="using:LetUsTalk.UI.Converters"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="LetUsTalk.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -22,14 +22,14 @@
     </Design.DataContext>
 
     <Grid>
-        <Button Content="{Binding ConnectButtonText}"
-                Command="{Binding ConnectCommand}"
+        <Button Content="{Binding Path=MainButtonComponent.Text}"
+                Command="{Binding Path=MainButtonComponent.Click}"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 HorizontalContentAlignment="Center"
                 VerticalContentAlignment="Center"
                 FontFamily="{StaticResource BitcountSingle}"
-                FontSize="{Binding RelativeSource={RelativeSource Self}, Path=Bounds.Height, Converter={x:Static conv:MultiplyConverter.Instance}, ConverterParameter='0.5,12'}"
+                FontSize="{Binding RelativeSource={RelativeSource Self}, Path=Bounds.Height, Converter={x:Static conv:LimitedMultiplyConverter.Instance}, ConverterParameter='0.5,12,0'}"
                 Background="Transparent"
                 Foreground="White"
                 CornerRadius="10"
@@ -37,5 +37,4 @@
                 Width="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Bounds.Width, Converter={x:Static conv:MultiplyConverter.Instance}, ConverterParameter=0.3}"
                 Height="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Bounds.Height, Converter={x:Static conv:MultiplyConverter.Instance}, ConverterParameter=0.15}"/>
     </Grid>
-
 </Window>

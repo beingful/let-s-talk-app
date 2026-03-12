@@ -1,81 +1,31 @@
 using System;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using Avalonia.Media;
-using Avalonia.Media.Imaging;
-using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
-using OpenCvSharp;
+using LetUsTalk.Interfaces;
+using LetUsTalk.ViewComponents;
 
 namespace LetUsTalk.ViewModels;
 
-public sealed partial class ConferenceRoomViewModel : ViewModelBase, IDisposable
+public sealed partial class ConferenceRoomViewModel : ViewModelBase, IInitializable, IDisposable
 {
     [ObservableProperty]
-    private IImage? cameraFrame;
+    private CameraContainerComponent _cameraContainerComponent;
 
-    private CancellationTokenSource? _captureCts;
-    private Task? _captureTask;
-    private VideoCapture? _capture;
+    [ObservableProperty]
+    private ConferenceMenuComponent _menuComponent;
 
-    public void StartCamera()
+    public ConferenceRoomViewModel(CameraContainerComponent cameraContainerComponent, ConferenceMenuComponent menuComponent)
     {
-        if (_captureTask != null)
-            return;
-
-        _capture = new VideoCapture(0);
-
-        if (!_capture.IsOpened())
-        {
-            _capture.Dispose();
-            _capture = null;
-
-            return;
-        }
-
-        _captureCts = new CancellationTokenSource();
-
-        _captureTask = Task.Run(() => CaptureLoop(_capture, _captureCts.Token));
+        CameraContainerComponent = cameraContainerComponent;
+        MenuComponent = menuComponent;
     }
 
-    private void CaptureLoop(VideoCapture capture, CancellationToken token)
+    public void Initialize()
     {
-        using Mat frame = new Mat();
-        
-        while (!token.IsCancellationRequested)
-        {
-            if (!capture.Read(frame) || frame.Empty())
-                continue;
-
-            byte[] encoded = frame.ImEncode(".bmp");
-            using MemoryStream stream = new MemoryStream(encoded);
-            Bitmap bitmap = new Bitmap(stream);
-
-            Dispatcher.UIThread.Post(() =>
-            {
-                Bitmap? oldBitmap = CameraFrame as Bitmap;
-                CameraFrame = bitmap;
-                oldBitmap?.Dispose();
-            });
-        }
+        CameraContainerComponent.Initialize();
     }
 
     public void Dispose()
     {
-        if (_captureCts == null)
-            return;
-
-        _captureCts.Cancel();
-        _captureTask?.Wait(500);
-        _captureTask = null;
-        _captureCts.Dispose();
-        _captureCts = null;
-
-        _capture?.Dispose();
-        _capture = null;
-
-        (CameraFrame as Bitmap)?.Dispose();
-        CameraFrame = null;
+        CameraContainerComponent.Dispose();
     }
 }

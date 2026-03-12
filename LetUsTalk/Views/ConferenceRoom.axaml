@@ -1,23 +1,26 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:LetUsTalk.ViewModels"
-        xmlns:conv="using:LetUsTalk.Converters"
+        xmlns:Views="using:LetUsTalk.Views.ConferenceRoom"
+        xmlns:conv="using:LetUsTalk.UI.Converters"
+        xmlns:i="using:Avalonia.Xaml.Interactivity"
+        xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
         x:Class="LetUsTalk.Views.ConferenceRoom"
         x:DataType="vm:ConferenceRoomViewModel"
-        Title="Conference Room"
-        Width="960"
-        Height="540">
+        Title="Conference Room">
 
     <Design.DataContext>
         <vm:ConferenceRoomViewModel/>
     </Design.DataContext>
 
     <Grid>
-        <Border x:Name="CameraPreviewContainer"
-                Width="640"
-                Height="360"
-                MinWidth="240"
-                MinHeight="180"
+        <Border x:Name="CameraViewBorder"
+                Width="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Bounds.Width, Converter={x:Static conv:LimitedMultiplyConverter.Instance}, ConverterParameter='0.66,460,0'}"
+                Height="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Bounds.Height, Converter={x:Static conv:LimitedMultiplyConverter.Instance}, ConverterParameter='0.66,300,0'}"
+                MinWidth="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Bounds.Width, Converter={x:Static conv:LimitedMultiplyConverter.Instance}, ConverterParameter='0.24,180,0'}"
+                MinHeight="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Bounds.Height, Converter={x:Static conv:LimitedMultiplyConverter.Instance}, ConverterParameter='0.24,130,0'}"
+                MaxWidth="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Bounds.Width, Converter={x:Static conv:MultiplyConverter.Instance}, ConverterParameter='0.9'}"
+                MaxHeight="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Bounds.Height, Converter={x:Static conv:MultiplyConverter.Instance}, ConverterParameter='0.9'}"
                 Margin="16"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
@@ -26,18 +29,15 @@
                 BorderBrush="#4A4A4A"
                 BorderThickness="1">
             <Grid>
-                <Image Source="{Binding CameraFrame}"
+                <Image Source="{Binding Path=CameraContainerComponent.CameraComponent.Frame}"
                        Stretch="UniformToFill"
                        HorizontalAlignment="Stretch"
                        VerticalAlignment="Stretch"/>
-
-                <Thumb Width="18"
-                       Height="18"
-                       HorizontalAlignment="Right"
-                       VerticalAlignment="Bottom"
+                <Thumb Width="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Bounds.Width, Converter={x:Static conv:MultiplyConverter.Instance}, ConverterParameter='0.02'}"
+                       Height="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Bounds.Height, Converter={x:Static conv:MultiplyConverter.Instance}, ConverterParameter='0.02'}"
+                       HorizontalAlignment="Right" VerticalAlignment="Bottom"
                        Margin="0,0,6,6"
-                       Cursor="BottomRightCorner"
-                       DragDelta="ResizeThumb_OnDragDelta">
+                       Cursor="BottomRightCorner">
                     <Thumb.Template>
                         <ControlTemplate>
                             <Border Background="#AA111111"
@@ -46,6 +46,13 @@
                                     CornerRadius="3"/>
                         </ControlTemplate>
                     </Thumb.Template>
+                    <i:Interaction.Behaviors>
+                        <ia:EventTriggerBehavior EventName="DragDelta">
+                            <ia:InvokeCommandAction
+                                Command="{Binding Path=CameraContainerComponent.BorderComponent.ResizeOnDragCommand}"
+                                PassEventArgsToCommand="True"/>
+                        </ia:EventTriggerBehavior>
+                    </i:Interaction.Behaviors>
                 </Thumb>
             </Grid>
         </Border>
@@ -67,25 +74,28 @@
                 <Setter Property="BorderThickness" Value="0"/>
             </Style>
         </Grid.Styles>
-
-        <Grid HorizontalAlignment="Right"
-              VerticalAlignment="Stretch"
-              Margin="0,16,16,16">
+        
+        <Grid HorizontalAlignment="Right" VerticalAlignment="Stretch" Margin="0,16,16,16">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Bounds.Width, Converter={x:Static conv:MultiplyConverter.Instance}, ConverterParameter='0.06,44'}"/>
+                <ColumnDefinition Width="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Bounds.Width, Converter={x:Static conv:LimitedMultiplyConverter.Instance}, ConverterParameter='0.06,44,0'}"/>
             </Grid.ColumnDefinitions>
 
-            <Border x:Name="ChatPanel"
-                    Grid.Column="0"
-                    Width="0"
-                    MinWidth="0"
-                    MaxWidth="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Bounds.Width, Converter={x:Static conv:MultiplyConverter.Instance}, ConverterParameter='0.45,220'}"
+            <Border Grid.Column="0"
                     ClipToBounds="True"
                     Background="#CC141414"
                     BorderBrush="#4A4A4A"
                     BorderThickness="1"
                     CornerRadius="8,0,0,8">
+                <Border.Width>
+                    <MultiBinding
+                            Converter="{x:Static conv:ConditionalMultiplyConverter.Instance}"
+                            ConverterParameter="0.3,220,0">
+                        <Binding Path="Bounds.Width" RelativeSource="{RelativeSource AncestorType=Window}"/>
+                        <Binding Path="MenuComponent.ChatComponent.Expanded"/>
+                    </MultiBinding>
+                </Border.Width>
+                
                 <Border.Transitions>
                     <Transitions>
                         <DoubleTransition Property="Width" Duration="0:0:0.2"/>
@@ -98,14 +108,11 @@
                             BorderBrush="#4A4A4A"
                             BorderThickness="0,0,0,1"
                             Padding="12,8">
-                        <TextBlock Text="Chat"
-                                   Foreground="White"
-                                   FontWeight="SemiBold"/>
+                        <TextBlock Text="Chat" Foreground="White" FontWeight="SemiBold"/>
                     </Border>
 
                     <ScrollViewer Grid.Row="1" Margin="12,8,12,8">
-                        <TextBlock Text="No messages yet."
-                                   Foreground="#C8C8C8"/>
+                        <TextBlock Text="No messages yet." Foreground="#C8C8C8"/>
                     </ScrollViewer>
 
                     <Border Grid.Row="2"
@@ -116,17 +123,17 @@
                             BorderThickness="1"
                             CornerRadius="8">
                         <Grid RowDefinitions="Auto,Auto">
-                            <TextBox Grid.Row="0"
-                                     x:Name="ChatInputTextBox"
-                                     Watermark="Type a message..."
-                                     AcceptsReturn="True"
-                                     TextWrapping="NoWrap"
-                                     Height="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Bounds.Height, Converter={x:Static conv:MultiplyConverter.Instance}, ConverterParameter='0.078,42'}"
-                                     VerticalContentAlignment="Center"
-                                     Background="Transparent"
-                                     BorderBrush="Transparent"
-                                     BorderThickness="0"
-                                     ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                            <TextBox x:Name="ChatInputTextBox"
+                                    Grid.Row="0"
+                                    Watermark="Type a message..."
+                                    AcceptsReturn="True"
+                                    TextWrapping="NoWrap"
+                                    Height="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Bounds.Height, Converter={x:Static conv:LimitedMultiplyConverter.Instance}, ConverterParameter='0.078,42,0'}"
+                                    VerticalContentAlignment="Center"
+                                    Background="Transparent"
+                                    BorderBrush="Transparent"
+                                    BorderThickness="0"
+                                    ScrollViewer.VerticalScrollBarVisibility="Hidden">
                                 <TextBox.Resources>
                                     <SolidColorBrush x:Key="TextControlBackground" Color="Transparent"/>
                                     <SolidColorBrush x:Key="TextControlBackgroundPointerOver" Color="Transparent"/>
@@ -136,21 +143,19 @@
                                     <SolidColorBrush x:Key="TextControlBorderBrushFocused" Color="Transparent"/>
                                 </TextBox.Resources>
                             </TextBox>
+
                             <Button Grid.Row="1"
                                     Margin="0,8,0,0"
                                     HorizontalAlignment="Right"
-                                    Width="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Bounds.Width, Converter={x:Static conv:MultiplyConverter.Instance}, ConverterParameter='0.028,20'}"
-                                    Height="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Bounds.Width, Converter={x:Static conv:MultiplyConverter.Instance}, ConverterParameter='0.028,20'}"
+                                    Width="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Bounds.Width, Converter={x:Static conv:LimitedMultiplyConverter.Instance}, ConverterParameter='0.028,20,0'}"
+                                    Height="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Bounds.Width, Converter={x:Static conv:LimitedMultiplyConverter.Instance}, ConverterParameter='0.028,20,0'}"
                                     CornerRadius="999"
                                     HorizontalContentAlignment="Center"
                                     VerticalContentAlignment="Center"
                                     ToolTip.Tip="Send message">
-                                <Viewbox Width="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Bounds.Width, Converter={x:Static conv:MultiplyConverter.Instance}, ConverterParameter='0.7,14'}"
-                                         Height="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Bounds.Height, Converter={x:Static conv:MultiplyConverter.Instance}, ConverterParameter='0.7,14'}">
-                                    <Canvas Width="24" Height="24">
-                                        <Path Data="M4,12.5 L21,4.5 L14.4,20 L12.4,13.7 Z"
-                                              Fill="White"/>
-                                    </Canvas>
+                                <Viewbox Width="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Bounds.Width, Converter={x:Static conv:LimitedMultiplyConverter.Instance}, ConverterParameter='0.7,14,0'}"
+                                        Height="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Bounds.Height, Converter={x:Static conv:LimitedMultiplyConverter.Instance}, ConverterParameter='0.7,14,0'}">
+                                    <PathIcon Data="M4,12.5 L21,4.5 L14.4,20 L12.4,13.7 Z"/>
                                 </Viewbox>
                             </Button>
                         </Grid>
@@ -164,14 +169,17 @@
                     BorderThickness="1"
                     CornerRadius="0,8,8,0">
                 <DockPanel LastChildFill="False">
-                    <Button x:Name="ChatToggleButton"
-                            DockPanel.Dock="Top"
+                    <Button DockPanel.Dock="Top"
                             Margin="6,6,6,0"
                             HorizontalAlignment="Center"
-                            Width="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Bounds.Width, Converter={x:Static conv:MultiplyConverter.Instance}, ConverterParameter='0.04,32'}"
-                            Height="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Bounds.Height, Converter={x:Static conv:MultiplyConverter.Instance}, ConverterParameter='0.06,32'}"
-                            ToolTip.Tip="Show/Hide chat"
-                            Click="ChatToggleButton_OnClick">
+                            Width="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Bounds.Width, Converter={x:Static conv:LimitedMultiplyConverter.Instance}, ConverterParameter='0.04,32,0'}"
+                            Height="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Bounds.Height, Converter={x:Static conv:LimitedMultiplyConverter.Instance}, ConverterParameter='0.06,32,0'}"
+                            ToolTip.Tip="Chat">
+                        <i:Interaction.Behaviors>
+                            <ia:EventTriggerBehavior EventName="Click">
+                                <ia:InvokeCommandAction Command="{Binding Path=MenuComponent.ChatToggleButtonClickCommand}"/>
+                            </ia:EventTriggerBehavior>
+                        </i:Interaction.Behaviors>
                         <PathIcon Data="M4,6 C4,4.9 4.9,4 6,4 L18,4 C19.1,4 20,4.9 20,6 L20,14 C20,15.1 19.1,16 18,16 L10,16 L6,20 L6,16 C4.9,16 4,15.1 4,14 Z"/>
                     </Button>
                 </DockPanel>

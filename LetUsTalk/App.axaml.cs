@@ -3,7 +3,6 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using System.Linq;
 using Avalonia.Markup.Xaml;
-using LetUsTalk.ViewModels;
 using LetUsTalk.Views;
 
 namespace LetUsTalk;
@@ -21,10 +20,7 @@ public partial class App : Application
         {
             DisableAvaloniaDataAnnotationValidation();
 
-            desktop.MainWindow = new MainWindow
-            {
-                DataContext = new MainWindowViewModel(),
-            };
+            desktop.MainWindow = new MainWindow();
         }
 
         base.OnFrameworkInitializationCompleted();
@@ -32,8 +28,8 @@ public partial class App : Application
 
     private void DisableAvaloniaDataAnnotationValidation()
     {
-        IEnumerable<DataAnnotationsValidationPlugin> dataValidationPluginsToRemove =
-            BindingPlugins.DataValidators.OfType<DataAnnotationsValidationPlugin>();
+        DataAnnotationsValidationPlugin[] dataValidationPluginsToRemove =
+            BindingPlugins.DataValidators.OfType<DataAnnotationsValidationPlugin>().ToArray();
 
         foreach (DataAnnotationsValidationPlugin plugin in dataValidationPluginsToRemove)
         {

@@ -1,56 +1,27 @@
 ﻿using System;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using LetUsTalk.Views;
+using LetUsTalk.Interfaces;
+using LetUsTalk.ViewComponents;
 
 namespace LetUsTalk.ViewModels;
 
-public partial class MainWindowViewModel : ViewModelBase
+public sealed partial class MainWindowViewModel : ViewModelBase, IInitializable, IDisposable
 {
-    private readonly DispatcherTimer _connectTextTimer;
-    private const string ConnectTextLoop = "⋅⋅⋅⋅Let⋅Us⋅Talk⋅⋅⋅⋅";
-    private int _connectTextOffset;
-
     [ObservableProperty]
-    private string connectButtonText = "Let Us Talk";
+    private MainButtonComponent _mainButtonComponent;
 
-    public MainWindowViewModel()
+    public MainWindowViewModel(MainButtonComponent mainButtonComponent)
     {
-        _connectTextTimer = new DispatcherTimer
-        {
-            Interval = TimeSpan.FromMilliseconds(280),
-        };
-
-        _connectTextTimer.Tick += (_, _) => AnimateConnectText();
-        _connectTextTimer.Start();
+        MainButtonComponent = mainButtonComponent;
     }
 
-    public string Greeting { get; } = "Welcome to Avalonia!";
-
-    private void AnimateConnectText()
+    void IInitializable.Initialize()
     {
-        _connectTextOffset = (_connectTextOffset + 1) % ConnectTextLoop.Length;
-        ConnectButtonText = ConnectTextLoop[_connectTextOffset..] + ConnectTextLoop[.._connectTextOffset];
+        MainButtonComponent.Initialize();
     }
 
-    [RelayCommand]
-    private void Connect()
+    void IDisposable.Dispose()
     {
-        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
-            return;
-
-        ConferenceRoom conferenceRoom = new ConferenceRoom
-        {
-            DataContext = new ConferenceRoomViewModel(),
-        };
-
-        conferenceRoom.Show();
-
-        if (desktop.MainWindow is Window currentWindow)
-            currentWindow.Close();
+        MainButtonComponent.Dispose();
     }
 }
