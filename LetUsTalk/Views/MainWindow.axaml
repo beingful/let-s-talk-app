@@ -25,8 +25,8 @@
         <StackPanel HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Spacing="16">
-            <Button Content="{Binding Path=ConnectToSessionButtonComponent.Text}"
-                    Command="{Binding Path=ConnectToSessionButtonComponent.Click}"
+            <Button Content="{Binding Path=CreateSessionButtonComponent.Text}"
+                    Command="{Binding Path=CreateSessionButtonComponent.Click}"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
                     FontFamily="{StaticResource BitcountSingle}"
@@ -37,8 +37,8 @@
                     Opacity="0.75"
                     Width="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Bounds.Width, Converter={x:Static conv:MultiplyConverter.Instance}, ConverterParameter=0.3}"
                     Height="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Bounds.Height, Converter={x:Static conv:MultiplyConverter.Instance}, ConverterParameter=0.15}"/>
-            <Button Content="{Binding Path=CreateSessionButtonComponent.Text}"
-                    Command="{Binding Path=CreateSessionButtonComponent.Click}"
+            <Button Content="{Binding Path=ConnectToSessionButtonComponent.Text}"
+                    Command="{Binding Path=ConnectToSessionButtonComponent.Click}"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
                     FontFamily="{StaticResource BitcountSingle}"
