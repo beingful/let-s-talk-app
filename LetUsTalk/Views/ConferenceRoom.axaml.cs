@@ -7,6 +7,7 @@ public partial class ConferenceRoom : WindowBase
 {
     public ConferenceRoom()
     {
+        Initialize();
     }
 
     protected override void Initialize()

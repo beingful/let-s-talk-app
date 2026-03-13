@@ -1,0 +1,63 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:LetUsTalk.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        x:Class="LetUsTalk.Views.ConnectToSessionWindow"
+        x:DataType="vm:ConnectToSessionWindowViewModel"
+        Title="Connect To Session"
+        Width="420"
+        SizeToContent="Height"
+        CanResize="False"
+        WindowStartupLocation="CenterOwner">
+
+    <Design.DataContext>
+        <vm:ConnectToSessionWindowViewModel/>
+    </Design.DataContext>
+
+    <Border Padding="24">
+        <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,*"
+              RowSpacing="12">
+            <TextBlock Text="Connect to session"
+                       Grid.Row="0"
+                       FontSize="20"
+                       FontWeight="SemiBold"/>
+            <TextBlock Text="Use the session key provided by the host to join an existing session."
+                       Grid.Row="1"
+                       TextWrapping="Wrap"
+                       Opacity="0.8"/>
+            <TextBox Text="{Binding Path=SessionModalWindowComponent.SessionComponent.SessionId, Mode=TwoWay}"
+                     Grid.Row="2"
+                     Watermark="Session id"
+                     HorizontalAlignment="Stretch"/>
+            <TextBox Text="{Binding Path=SessionModalWindowComponent.SessionComponent.SessionKey, Mode=TwoWay}"
+                     Grid.Row="3"
+                     Watermark="Session key"
+                     HorizontalAlignment="Stretch"/>
+            <TextBlock Text="{Binding Path=SessionModalWindowComponent.SessionComponent.ValidationMessage}"
+                       Grid.Row="4"
+                       Foreground="#FF6B6B"
+                       IsVisible="{Binding Path=SessionModalWindowComponent.SessionComponent.HasValidationMessage}"
+                       TextWrapping="Wrap"/>
+            <StackPanel Grid.Row="5"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        Spacing="12"
+                        Margin="0,8,0,0">
+                <Button Content="Connect"
+                        Background="#2E8B57"
+                        Foreground="White"
+                        MinWidth="100"
+                        HorizontalContentAlignment="Center"
+                        Command="{Binding Path=SessionModalWindowComponent.ConnectCommand}"/>
+                <Button Content="Cancel"
+                        Background="#C0392B"
+                        Foreground="White"
+                        MinWidth="100"
+                        HorizontalContentAlignment="Center"
+                        Command="{Binding Path=SessionModalWindowComponent.CancelCommand}"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>
