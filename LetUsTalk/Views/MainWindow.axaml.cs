@@ -7,7 +7,7 @@ using LetUsTalk.ViewModels;
 
 namespace LetUsTalk.Views;
 
-public partial class MainWindow : WindowBase, ISessionModalWindowHost
+public partial class MainWindow : WindowBase, ISessionModalWindowHost, ICreateSessionModalWindowHost
 {
     public MainWindow()
     {
@@ -35,7 +35,7 @@ public partial class MainWindow : WindowBase, ISessionModalWindowHost
                 }
             ),
             createSessionButtonComponent: new CreateSessionButtonComponent(
-                mainWindow: this,
+                createSessionModalWindowHost: this,
                 button: new Element(size: new Size(100, 100))
                     {
                         Caption = RunningCaption.Create("CREATE NEW SESSION", ' ', 4)
@@ -51,6 +51,13 @@ public partial class MainWindow : WindowBase, ISessionModalWindowHost
     void ISessionModalWindowHost.ShowConnectToSessionWindow()
     {
         ConnectToSessionWindow dialog = new(this);
+
+        _ = dialog.ShowDialog(this);
+    }
+
+    void ICreateSessionModalWindowHost.ShowCreateSessionWindow()
+    {
+        CreateSessionWindow dialog = new(this);
 
         _ = dialog.ShowDialog(this);
     }

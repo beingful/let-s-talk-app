@@ -1,24 +1,20 @@
 using LetUsTalk.Interfaces;
 using LetUsTalk.Utilities.UI;
-using LetUsTalk.Views;
 
 namespace LetUsTalk.ViewComponents;
 
 public sealed class CreateSessionButtonComponent : MainButtonComponent
 {
-    private readonly IWindow _mainWindow;
+    private readonly ICreateSessionModalWindowHost _createSessionModalWindowHost;
 
-    public CreateSessionButtonComponent(IWindow mainWindow, Element button, Avalonia.Threading.DispatcherTimer runningTextTimer)
+    public CreateSessionButtonComponent(ICreateSessionModalWindowHost createSessionModalWindowHost, Element button, Avalonia.Threading.DispatcherTimer runningTextTimer)
         : base(button, runningTextTimer)
     {
-        _mainWindow = mainWindow;
+        _createSessionModalWindowHost = createSessionModalWindowHost;
     }
 
     protected override void OnClick()
     {
-        ConferenceRoom conferenceRoom = new();
-
-        conferenceRoom.Show();
-        _mainWindow.Close();
+        _createSessionModalWindowHost.ShowCreateSessionWindow();
     }
 }

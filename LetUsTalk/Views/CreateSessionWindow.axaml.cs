@@ -1,21 +1,22 @@
 using LetUsTalk.Interfaces;
 using LetUsTalk.Models;
+using LetUsTalk.Services.Genertor;
 using LetUsTalk.Services.Validation;
 using LetUsTalk.ViewComponents;
 using LetUsTalk.ViewModels;
 
 namespace LetUsTalk.Views;
 
-public partial class ConnectToSessionWindow : WindowBase
+public partial class CreateSessionWindow : WindowBase
 {
     private readonly IWindow _mainWindow;
 
-    public ConnectToSessionWindow()
+    public CreateSessionWindow()
         : this(null!)
     {
     }
 
-    public ConnectToSessionWindow(IWindow mainWindow)
+    public CreateSessionWindow(IWindow mainWindow)
     {
         _mainWindow = mainWindow;
         Initialize();
@@ -29,13 +30,21 @@ public partial class ConnectToSessionWindow : WindowBase
 
     protected override void InitializeDataContext()
     {
-        DataContext = new ConnectToSessionWindowViewModel(
-            sessionModalWindowComponent: new SessionModalWindowComponent(
+        DataContext = new CreateSessionWindowViewModel(
+            createSessionModalWindowComponent: new CreateSessionModalWindowComponent(
                 mainWindow: _mainWindow,
                 modalWindow: this,
+                randomStringGenerator: new RandomStringGenerator(
+                    charactersPool: new CharactersPoolBuilder()
+                        .WithLetters()
+                        .WithNumbers()
+                        .ToString(),
+                    minLength: 4,
+                    maxLength: 12
+                ),
                 sessionComponent: new SessionComponent(
                     session: new Session(),
-                    validator: new ConnectSessionValidator()
+                    validator: new CreateSessionValidator()
                 )
             )
         );

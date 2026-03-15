@@ -8,9 +8,13 @@ public sealed partial class ConferenceMenuComponent : ObservableObject
     [ObservableProperty]
     private ChatComponent _chatComponent;
 
-    public ConferenceMenuComponent(ChatComponent chatComponent)
+    [ObservableProperty]
+    private LeaveConferenceRoomButtonComponent _leaveConferenceRoomButtonComponent;
+
+    public ConferenceMenuComponent(ChatComponent chatComponent, LeaveConferenceRoomButtonComponent leaveConferenceRoomButtonComponent)
     {
         ChatComponent = chatComponent;
+        LeaveConferenceRoomButtonComponent = leaveConferenceRoomButtonComponent;
     }
 
     [RelayCommand]

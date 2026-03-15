@@ -27,9 +27,9 @@
                        Grid.Row="1"
                        TextWrapping="Wrap"
                        Opacity="0.8"/>
-            <TextBox Text="{Binding Path=SessionModalWindowComponent.SessionComponent.SessionId, Mode=TwoWay}"
+            <TextBox Text="{Binding Path=SessionModalWindowComponent.SessionComponent.SessionName, Mode=TwoWay}"
                      Grid.Row="2"
-                     Watermark="Session id"
+                     Watermark="Session name"
                      HorizontalAlignment="Stretch"/>
             <TextBox Text="{Binding Path=SessionModalWindowComponent.SessionComponent.SessionKey, Mode=TwoWay}"
                      Grid.Row="3"

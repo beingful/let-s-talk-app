@@ -28,6 +28,9 @@ public partial class ConferenceRoom : WindowBase
             menuComponent: new ConferenceMenuComponent(
                 chatComponent: new ChatComponent(
                     expanded: false
+                ),
+                leaveConferenceRoomButtonComponent: new LeaveConferenceRoomButtonComponent(
+                    conferenceRoomWindow: this
                 )
             )
         );

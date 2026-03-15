@@ -1,13 +1,22 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using LetUsTalk.Interfaces;
+using LetUsTalk.Models;
 
 namespace LetUsTalk.ViewComponents;
 
 public sealed partial class SessionComponent : ObservableObject
 {
-    public const string InvalidSessionMessage = "Either session id or key is invalid";
+    private readonly Session _session;
+    private readonly IValidator<Session> _validator;
+
+    public SessionComponent(Session session, IValidator<Session> validator)
+    {
+        _session = session;
+        _validator = validator;
+    }
 
     [ObservableProperty]
-    private string? _sessionId;
+    private string? _sessionName;
 
     [ObservableProperty]
     private string? _sessionKey;
@@ -24,13 +33,20 @@ public sealed partial class SessionComponent : ObservableObject
 
     public bool IsValid()
     {
-        if (string.IsNullOrWhiteSpace(SessionId) || string.IsNullOrWhiteSpace(SessionKey))
+        _session.Name = SessionName;
+        _session.Key = SessionKey;
+
+        Result result = _validator.Validate(_session);
+
+        if (result.Success)
         {
-            ValidationMessage = InvalidSessionMessage;
-            return false;
+            ValidationMessage = null;
+        }
+        else
+        {
+            ValidationMessage = result.Message;
         }
 
-        ValidationMessage = null;
-        return true;
+        return result.Success;
     }
 }

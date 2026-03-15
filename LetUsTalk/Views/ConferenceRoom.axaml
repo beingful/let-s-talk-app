@@ -73,6 +73,18 @@
                 <Setter Property="BorderBrush" Value="Transparent"/>
                 <Setter Property="BorderThickness" Value="0"/>
             </Style>
+            <Style Selector="Button#LeaveConferenceRoomButton PathIcon#LeaveConferenceRoomClosedDoorIcon">
+                <Setter Property="IsVisible" Value="True"/>
+            </Style>
+            <Style Selector="Button#LeaveConferenceRoomButton PathIcon#LeaveConferenceRoomOpenDoorIcon">
+                <Setter Property="IsVisible" Value="False"/>
+            </Style>
+            <Style Selector="Button#LeaveConferenceRoomButton:pointerover PathIcon#LeaveConferenceRoomClosedDoorIcon">
+                <Setter Property="IsVisible" Value="False"/>
+            </Style>
+            <Style Selector="Button#LeaveConferenceRoomButton:pointerover PathIcon#LeaveConferenceRoomOpenDoorIcon">
+                <Setter Property="IsVisible" Value="True"/>
+            </Style>
         </Grid.Styles>
         
         <Grid HorizontalAlignment="Right" VerticalAlignment="Stretch" Margin="0,16,16,16">
@@ -181,6 +193,21 @@
                             </ia:EventTriggerBehavior>
                         </i:Interaction.Behaviors>
                         <PathIcon Data="M4,6 C4,4.9 4.9,4 6,4 L18,4 C19.1,4 20,4.9 20,6 L20,14 C20,15.1 19.1,16 18,16 L10,16 L6,20 L6,16 C4.9,16 4,15.1 4,14 Z"/>
+                    </Button>
+                    <Button x:Name="LeaveConferenceRoomButton"
+                            DockPanel.Dock="Bottom"
+                            Margin="6,6,6,6"
+                            HorizontalAlignment="Center"
+                            Width="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Bounds.Width, Converter={x:Static conv:LimitedMultiplyConverter.Instance}, ConverterParameter='0.04,32,0'}"
+                            Height="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Bounds.Height, Converter={x:Static conv:LimitedMultiplyConverter.Instance}, ConverterParameter='0.06,32,0'}"
+                            ToolTip.Tip="Leave conference room"
+                            Command="{Binding Path=MenuComponent.LeaveConferenceRoomButtonComponent.ClickCommand}">
+                        <Grid>
+                            <PathIcon x:Name="LeaveConferenceRoomClosedDoorIcon"
+                                      Data="M6,2 C4.89,2 4,2.89 4,4 L4,20 C4,21.11 4.89,22 6,22 L18,22 C19.11,22 20,21.11 20,20 L20,4 C20,2.89 19.11,2 18,2 Z M10,4 L18,4 L18,20 L10,20 Z M6,4 L8,4 L8,20 L6,20 Z M12,11 L14,11 L14,13 L12,13 Z"/>
+                            <PathIcon x:Name="LeaveConferenceRoomOpenDoorIcon"
+                                      Data="M7,2 C5.89,2 5,2.89 5,4 L5,20 C5,21.11 5.89,22 7,22 L17,22 C18.11,22 19,21.11 19,20 L19,15 L17,15 L17,20 L9,20 L9,4 L17,4 L17,9 L19,9 L19,4 C19,2.89 18.11,2 17,2 Z M13,9 L13,11 L8,11 L8,13 L13,13 L13,15 L17,12 Z"/>
+                        </Grid>
                     </Button>
                 </DockPanel>
             </Border>
